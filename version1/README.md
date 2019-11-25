@@ -4,7 +4,7 @@
 
  * #### STEP 1 :
 
- // git init and refer to [Node.gitignore](https://github.com/github/gitignore/blob/master/Node.gitignore#L3)
+ // initialize git and build .gitignore file based on [Node.gitignore](https://github.com/github/gitignore/blob/master/Node.gitignore#L3)
 
  // initialize and build package.json
 
