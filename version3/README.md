@@ -1,10 +1,9 @@
 
 * ### Part3 : MODELS
 
-
  * #### Step1
 
-// build models folder;
+// build models folder
 
 // Update movieSchema with comments , create a separate file as movie.js; including `module.exports = Movie`
 
