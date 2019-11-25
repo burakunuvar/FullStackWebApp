@@ -46,7 +46,7 @@ So that req.body.title, req.body.image will be passed through the form
 
  // Build a new ejs file for new items to be added : newMovie.ejs
 
- // Use a form with method="POST" and action="/movies" ;should be same as post route
+ // Use a form with method="POST" and action="/movies" ; should be same as post route which will be handled in app.js
 
  ```
   $ <form action="/movies" method="POST">
