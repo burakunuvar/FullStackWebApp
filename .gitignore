@@ -1,5 +1,6 @@
 node_modules
 build
+a-sandbox
 npm-debug.log
 .env
 .DS_Store
