@@ -7,6 +7,7 @@
 
   ```
   $ npm install mongoose
+  
   ```
 
   // Update app.js with required code based on [Mongoose](https://mongoosejs.com/)
