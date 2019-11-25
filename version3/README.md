@@ -1,5 +1,5 @@
 
-* ### Part3 : MODELS
+* ### Part3 : Models and Data Association
 
  * #### Step1
 
