@@ -41,29 +41,29 @@ router.get("/login",function(req,res){
     res.render("login");
 });
 
-// router.post("/login", passport.authenticate("local", {
-//         successRedirect: "/movies",
-//         failureRedirect: "/login"
-//     }) ,function(req, res){
-// });
-
-router.post("/login", function(req, res) {
-  const user = new User({
-    username: req.body.username,
-    password: req.body.passport
-  });
-  req.login(user, function(err) {
-    if (err) {
-      console.log(err);
-      console.log("LOGIN FAILED");
-    }else{
-      passport.authenticate('local')(req, res, function() {
-        console.log("LOGIN SUCCESS");
-        res.redirect('/movies');
-      });
-    }
-  });
+router.post("/login", passport.authenticate("local", {
+        successRedirect: "/movies",
+        failureRedirect: "/login"
+    }) ,function(req, res){
 });
+
+// router.post("/login", function(req, res) {
+//   const user = new User({
+//     username: req.body.username,
+//     password: req.body.passport
+//   });
+//   req.login(user, function(err) {
+//     if (err) {
+//       console.log(err);
+//       console.log("LOGIN FAILED");
+//     }else{
+//       passport.authenticate('local')(req, res, function() {
+//         console.log("LOGIN SUCCESS");
+//         res.redirect('/movies');
+//       });
+//     }
+//   });
+// });
 
 //LOGOUT
 
