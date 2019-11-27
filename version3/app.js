@@ -8,6 +8,7 @@ const Comment = require("./models/movie");
 const seedDB = require("./seeds");
 
 seedDB();
+
 mongoose.connect('mongodb://localhost:27017/moviesDB', {useNewUrlParser: true});
 
 const app = express();
