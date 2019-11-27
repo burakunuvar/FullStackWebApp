@@ -1,4 +1,5 @@
-## sampleNodeApp - MovieBlog
+## FullStackWebApp
+#### by Bootstrap & Express with Node.JS & Mongoose with MongoDB
 
 * ### Part1 : Ignite the Project
 
@@ -381,14 +382,13 @@ $ app.use(express.static(__dirname + "/public"));
     passport.deserializeUser(User.deserializeUser());
   ```
 
-
   * #### Step 3 Auth Routes
 
   => Build register.ejs  and login.ejs in views folder
 
    => Add auth ( register and login ) routes to app.js. User.register method is provided by passport-local-mongoose
 
-   <u>  register route :
+   <u>  register route : </u>
 
    ```  
    app.get("/register", function(req, res) {
@@ -412,7 +412,7 @@ $ app.use(express.static(__dirname + "/public"));
    });
 
    ```
-   <u> login route version 1:
+   <u> login route version 1: </u>
 
    ```  
    app.get("/login", function(req, res) {
@@ -426,7 +426,7 @@ $ app.use(express.static(__dirname + "/public"));
   });
 
    ```
-   <u> login route version 2:
+   <u> login route version 2: </u>
 
    ```  
    app.post("/login", function(req, res) {
@@ -448,7 +448,7 @@ $ app.use(express.static(__dirname + "/public"));
    });
 
    ```
-  <u>  logout route :
+  <u>  logout route : </u>
 
    ```  
    app.get("/logout", function(req, res){
@@ -458,7 +458,7 @@ $ app.use(express.static(__dirname + "/public"));
 
    ```
 
-   => update header.ejs file in partials with `ìf`statement to show/hide auth links :
+  // update header.ejs file in partials with `ìf`statement to show/hide auth links :
 
    ```
    <%  if(!currentUser) { %>
@@ -470,3 +470,50 @@ $ app.use(express.static(__dirname + "/public"));
    <% } %>
 
    ```
+
+
+* ### Part7 : Refactoring Routes
+
+  => make a new directory called "routes" in the same folder as app.js; that will include 3 main route files :
+
+    ```
+     $ mkdir routes
+     $ touch routes/movies.js
+     $ touch routes/comments.js
+     $ touch routes/auths.js
+   ```
+    => Copy and past the related logic to each of the created files
+
+    => Require express and use router in each of files , to return a value :
+
+    ```
+     const express = require("express");
+     const router = express.Router();
+     ...
+     module.exports = router
+   ```
+   // replace all `app.` with `router.` as we will need to pass path params betweens files in the optional part ( :id from comment.ejs to app.js )
+
+    => Require the created routes in app.js and call each :
+
+    ```
+     const commentRoutes = require("./routes/comments");
+     const movieRoutes = require("./routes/movies");  
+     const authRoutes = require("./routes/auth");
+     app.use(commentRoutes);
+     app.use(movieRoutes);
+     app.use(authRoutes);
+   ```
+   => Work on warnings on each of created route files, eliminate them by requiring needed dependencies
+
+    => Optional:  Place the routes in app.use functions and remove from created routes ...
+
+    ```
+     app.use("/", authRoutes);
+     app.use("/movies", movieRoutes);
+     app.use("/movies/:id/comments", commentRoutes);
+   ```
+    => to be able to use ":id" you should merge params in the file it's included ( comment.js, in this case).
+    ```
+    const router = express.Router({mergeParams:true});
+    ```
