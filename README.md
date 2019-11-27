@@ -563,7 +563,7 @@ $ app.use(express.static(__dirname + "/public"));
 
      => Update showMovie.ejs to show author.username
 
-* ### Part8 : User Associations-Movie
+* ### Part9 : User Associations-Movie
 
     * #### Step1 : Only authenticated user can add a new movie
 
@@ -642,3 +642,158 @@ $ app.use(express.static(__dirname + "/public"));
       => Drop database through mongo shell and remove seedDB for a manual entry
 
       => Update showMovie.ejs to show author.username , as submitted by ...( to get rid of previous entries with different schema)
+
+* ### Part10 : Part10A: Complete RESTful APIs  (EDIT & UPDATE & DELETE)
+  * #### Step1 : method-override
+
+  => HTML forms do not support PUT and DELETE requests; for which you will need [method-override](https://www.npmjs.com/package/method-override):
+  ```
+  $ npm i method-override
+  ```
+  ```
+  var methodOverride = require('method-override')
+  app.use(methodOverride('_method'))
+  ```
+
+
+  * #### Step2 : Work on edit route in movies.js
+
+    ```
+    router.get("/:id/edit",function(req,res){
+      console.log("**** RESTAPI: 5-EDIT ; request made to editMovie.ejs ");
+      Movie.findById(req.params.id).populate("comments").exec(function(err,editedMovie){
+        if(!err){
+          res.render("movies/editMovie",{editedMovie:editedMovie});
+          console.log(editedMovie);
+        }else{
+          console.log(err);
+        }
+      });
+    });
+
+    ```
+
+    => Add a link to shownMovie.ejs for edit route (editMovie.ejs)
+
+    => Build editMovie.ejs, which will be similar to newMovie.ejs except for post(put) route and values
+
+
+  * #### Step3 : Work on update route in movies.js
+
+  => alternative 1 :
+
+  ```
+  router.put("/:id",function(req,res){
+    console.log("**** RESTAPI: 6-PUT ; request made to showMovie.ejs ");
+    var updatedMovie={
+      title: req.body.title,
+      image: req.body.image,
+      description: req.body.description,
+      author: {
+        id: req.user._id,
+        username: req.user.username,
+      },
+    };
+    updatedMovie.author.id = req.user._id;
+    updatedMovie.author.username = req.user.username;
+    Movie.findByIdAndUpdate(req.params.id,updatedMovie,function(err,updatedMovie){
+      if(!err){
+        console.log(updatedMovie);
+        res.redirect("/movies/");
+      }else {
+        res.redirect("/posts");
+      }
+    });
+  });
+
+  ```
+
+  => shorter version : Use an object for the values in editMovie
+
+    ```
+    name="title" ==> name="editedMovie[title]"
+    name="image" ==> "editedMovie[image]"
+    name="description" ==> "editedMovie[description]"
+
+    ```
+
+    ```
+    router.put("/:id",function(req,res){
+      console.log("**** RESTAPI: 6-PUT ; request made to showMovie.ejs ");
+      Movie.findByIdAndUpdate(req.params.id,req.body.editedMovie,function(err,updatedMovie){
+        if(!err){
+          console.log(updatedMovie);
+          res.redirect("/movies/" + req.params.id );
+        }else {
+          res.redirect("/movies");
+        }
+      });
+    });
+    ```
+
+    * #### Step4 : Work on delete route in movies.js
+
+      => Add the delete route to app.js
+
+      ```
+      router.delete("/:id",function(req,res){
+        console.log("**** RESTAPI: 7-DELETE ; request made to showMovie.ejs ");
+        Movie.findByIdAndRemove(req.params.id,function(err,deletedPost){
+          if(!err){
+            res.redirect("/movies");
+          }else{
+            console.log(err);
+          }
+        });
+      });
+      ```
+
+      => Add a form with post request to shownMovie.ejs for the delete route
+
+      => Make the form in-line by using id, as it's a block level element and update stylescss file.
+
+      ```
+      <form class="form-inline mb-2 " action="/movies/<%=shownMovie._id%>?_method=DELETE" method="POST">
+         <a class="btn btn-outline-warning btn-sm d-inline ml-1" href="/movies/<%=shownMovie._id %>/edit" role="button"> edit </a>
+         <button type="submit" class="btn btn-outline-danger btn-sm ml-1">delete</button>
+       </form>
+
+      ```
+
+    * #### Step5 : Authorization
+
+      => You can't edit, post or delete unless you own the campground
+
+      ```
+      function checkMovieAuthorization(req, res, next){
+          if(req.isAuthenticated()){
+              console.log("*****AUTHENTICATED*****");
+              Movie.findById(req.params.id, function (err, foundMovie){
+                  if(err) {
+                      console.log("MOVIE NOT FOUND");
+                      res.redirect("back");
+                  }else {
+                      console.log("MOVIE FOUND");
+                      if(foundMovie.author.id.equals(req.user._id)){
+                          console.log("*****AUTHORIZED*****");
+                          next();
+                      }else{
+                          console.log("-----NOT AUTHORIZED-----");
+                          res.redirect("back");
+                      }
+                  }
+              });
+          }else{
+            console.log("----- NOT AUTHENTICATED----");
+            res.redirect("back");
+          }
+      }
+      ```
+
+      => Update show.ejs , for edit and delete links to be visible only for authorized users
+
+      => instead of '===' use 'equals(...)' since req.user.id is not a string but an object
+
+        ```
+        <%  if(currentUser && shownMovie.author.id.equals(currentUser._id)) { %>
+        ```
