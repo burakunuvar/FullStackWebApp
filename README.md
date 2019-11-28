@@ -1064,3 +1064,8 @@ const middware = require("../middleware/middleware");
   ```
 
   ==> Flash could be added to any of the routes where necessary
+
+
+  ###   Part12: Flash Messages
+
+  ==> Finalise project with [background-styling](https://github.com/nax3t/background-slider) and [dynamic pricing](https://github.com/nax3t/dynamic-price)
